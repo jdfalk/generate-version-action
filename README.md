@@ -22,22 +22,22 @@ Generate semantic versions based on git tags and release type with intelligent a
 
 ## Inputs
 
-| Input | Description | Default |
-|-------|-------------|---------|
-| `release-type` | Release type (major/minor/patch/auto) | `auto` |
-| `branch-name` | Git branch name for context | `main` |
-| `prerelease-suffix` | Prerelease suffix (alpha/beta/rc) | `` |
+| Input               | Description                           | Default |
+| ------------------- | ------------------------------------- | ------- |
+| `release-type`      | Release type (major/minor/patch/auto) | `auto`  |
+| `branch-name`       | Git branch name for context           | `main`  |
+| `prerelease-suffix` | Prerelease suffix (alpha/beta/rc)     | ``      |
 
 ## Outputs
 
-| Output | Description |
-|--------|-------------|
-| `tag` | Full semantic version tag (v1.2.3) |
-| `version` | Semantic version without 'v' (1.2.3) |
-| `major` | Major version number |
-| `minor` | Minor version number |
-| `patch` | Patch version number |
-| `prerelease` | Prerelease suffix if any |
+| Output       | Description                          |
+| ------------ | ------------------------------------ |
+| `tag`        | Full semantic version tag (v1.2.3)   |
+| `version`    | Semantic version without 'v' (1.2.3) |
+| `major`      | Major version number                 |
+| `minor`      | Minor version number                 |
+| `patch`      | Patch version number                 |
+| `prerelease` | Prerelease suffix if any             |
 
 ## Release Types
 
