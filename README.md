@@ -23,11 +23,13 @@ auto-detection.
 
 ## Inputs
 
-| Input               | Description                           | Default |
-| ------------------- | ------------------------------------- | ------- |
-| `release-type`      | Release type (major/minor/patch/auto) | `auto`  |
-| `branch-name`       | Git branch name for context           | `main`  |
-| `prerelease-suffix` | Prerelease suffix (alpha/beta/rc)     | ``      |
+| Input               | Description                                                           | Default                                       |
+| ------------------- | --------------------------------------------------------------------- | --------------------------------------------- |
+| `release-type`      | Release type (major/minor/patch/auto)                                 | `auto`                                        |
+| `branch-name`       | Git branch name for context                                           | `main`                                        |
+| `prerelease-suffix` | Prerelease suffix (alpha/beta/rc)                                     | ``                                            |
+| `use-docker`        | Run the action inside the published container image                   | `false`                                       |
+| `docker-image`      | Docker image reference (tag or digest) used when `use-docker` is true | `ghcr.io/jdfalk/generate-version-action:main` |
 
 ## Outputs
 
@@ -89,6 +91,16 @@ auto-detection.
     # If found → minor, else → patch
 ```
 
+### Force Docker execution
+
+```yaml
+- uses: jdfalk/generate-version-action@v1
+  id: version
+  with:
+    use-docker: true
+    docker-image: ghcr.io/jdfalk/generate-version-action:main
+```
+
 ## Features
 
 ✅ **Semantic Versioning** - SemVer 2.0.0 compliant ✅ **Auto-Detection** -
@@ -105,7 +117,7 @@ When `release-type: auto`, the action scans commits since the last tag:
 
 Enable with conventional commit prefix like:
 
-```
+```text
 feat(api): add new endpoint
 fix(docs): update readme
 ```

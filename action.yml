@@ -1,5 +1,5 @@
 # file: action.yml
-# version: 1.0.0
+# version: 1.1.0
 # guid: 8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e
 
 name: "Generate Semantic Version"
@@ -25,31 +25,39 @@ inputs:
     description: "Prerelease suffix (e.g., 'alpha', 'beta', 'rc')"
     required: false
     default: ""
+  use-docker:
+    description: "Run inside the prebuilt Docker image"
+    required: false
+    default: "false"
+  docker-image:
+    description: "Docker image reference (tag or digest) to use when use-docker is true"
+    required: false
+    default: "ghcr.io/jdfalk/generate-version-action:main"
 
 outputs:
   tag:
     description: "Full semantic version tag (e.g., v1.2.3)"
-    value: ${{ steps.version.outputs.tag }}
+    value: ${{ steps.version.outputs.tag || steps.version-docker.outputs.tag }}
 
   version:
     description: "Semantic version without 'v' prefix (e.g., 1.2.3)"
-    value: ${{ steps.version.outputs.version }}
+    value: ${{ steps.version.outputs.version || steps.version-docker.outputs.version }}
 
   major:
     description: "Major version number"
-    value: ${{ steps.version.outputs.major }}
+    value: ${{ steps.version.outputs.major || steps.version-docker.outputs.major }}
 
   minor:
     description: "Minor version number"
-    value: ${{ steps.version.outputs.minor }}
+    value: ${{ steps.version.outputs.minor || steps.version-docker.outputs.minor }}
 
   patch:
     description: "Patch version number"
-    value: ${{ steps.version.outputs.patch }}
+    value: ${{ steps.version.outputs.patch || steps.version-docker.outputs.patch }}
 
   prerelease:
     description: "Prerelease suffix (if any)"
-    value: ${{ steps.version.outputs.prerelease }}
+    value: ${{ steps.version.outputs.prerelease || steps.version-docker.outputs.prerelease }}
 
 runs:
   using: "composite"
@@ -59,8 +67,45 @@ runs:
       with:
         fetch-depth: 0
 
-    - name: Generate version
+    - name: Generate version (docker)
+      id: version-docker
+      if: inputs.use-docker == 'true'
+      shell: bash
+      env:
+        RELEASE_TYPE: ${{ inputs.release-type }}
+        BRANCH_NAME: ${{ inputs.branch-name }}
+        PRERELEASE_SUFFIX: ${{ inputs.prerelease-suffix }}
+        DOCKER_IMAGE: ${{ inputs.docker-image }}
+      run: |
+        set -euo pipefail
+
+        if ! command -v docker >/dev/null 2>&1; then
+          echo "::error::Docker is required when use-docker is true."
+          exit 1
+        fi
+
+        touch "$GITHUB_OUTPUT" "$GITHUB_STEP_SUMMARY"
+
+        if ! docker pull "$DOCKER_IMAGE"; then
+          echo "::warning::Pull failed, building $DOCKER_IMAGE locally."
+          docker build --tag "$DOCKER_IMAGE" "${{ github.action_path }}"
+        fi
+
+        docker run --rm \
+          -e RELEASE_TYPE \
+          -e BRANCH_NAME \
+          -e PRERELEASE_SUFFIX \
+          -e GITHUB_OUTPUT \
+          -e GITHUB_STEP_SUMMARY \
+          -v "$GITHUB_OUTPUT:$GITHUB_OUTPUT" \
+          -v "$GITHUB_STEP_SUMMARY:$GITHUB_STEP_SUMMARY" \
+          -v "${{ github.workspace }}:/repo" \
+          -w /repo \
+          "$DOCKER_IMAGE"
+
+    - name: Generate version (host)
       id: version
+      if: inputs.use-docker != 'true'
       shell: bash
       env:
         RELEASE_TYPE: ${{ inputs.release-type }}

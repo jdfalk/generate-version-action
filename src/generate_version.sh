@@ -15,6 +15,7 @@ IFS='.' read -r major minor patch_full <<<"$version"
 patch="${patch_full%%-*}" # Strip prerelease suffix
 
 # Increment based on release type
+# shellcheck disable=SC2153
 release_type="${RELEASE_TYPE,,}"
 case "$release_type" in
 major)
