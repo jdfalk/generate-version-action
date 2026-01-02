@@ -1,5 +1,5 @@
 <!-- file: TODO.md -->
-<!-- version: 1.0.0 -->
+<!-- version: 1.0.2 -->
 <!-- guid: 8f71310a-fb6f-4840-af91-178e549e90b6 -->
 
 # TODO - generate-version-action
@@ -40,4 +40,8 @@ Generates semantic version numbers based on git tags and commits
 
 ---
 
-*This TODO.md was automatically generated on 2026-01-02*
+<!-- markdownlint-disable MD036 -->
+
+_This TODO.md was automatically generated on 2026-01-02_
+
+<!-- markdownlint-enable MD036 -->
