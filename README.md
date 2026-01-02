@@ -1,6 +1,7 @@
 # Generate Version Action
 
-Generate semantic versions based on git tags and release type with intelligent auto-detection.
+Generate semantic versions based on git tags and release type with intelligent
+auto-detection.
 
 ## Usage
 
@@ -11,7 +12,7 @@ Generate semantic versions based on git tags and release type with intelligent a
   with:
     release-type: auto
     branch-name: ${{ github.ref_name }}
-    prerelease-suffix: ""
+    prerelease-suffix: ''
 
 - name: Create release
   uses: softprops/action-gh-release@v1
@@ -46,7 +47,8 @@ Generate semantic versions based on git tags and release type with intelligent a
 - **major**: X.0.0 - Breaking API changes
 - **minor**: x.Y.0 - New features, backward compatible
 - **patch**: x.y.Z - Bug fixes only
-- **auto**: Detect from commit messages (uses minor if `feat:` commits found, else patch)
+- **auto**: Detect from commit messages (uses minor if `feat:` commits found,
+  else patch)
 
 ## Examples
 
@@ -57,7 +59,6 @@ Generate semantic versions based on git tags and release type with intelligent a
   id: version
   with:
     release-type: patch
-
 # Output:
 # tag=v1.2.4
 # version=1.2.4
@@ -71,8 +72,7 @@ Generate semantic versions based on git tags and release type with intelligent a
   id: version
   with:
     release-type: minor
-    prerelease-suffix: "beta"
-
+    prerelease-suffix: 'beta'
 # Output:
 # tag=v1.3.0-beta.1
 # version=1.3.0-beta.1
@@ -91,11 +91,10 @@ Generate semantic versions based on git tags and release type with intelligent a
 
 ## Features
 
-✅ **Semantic Versioning** - SemVer 2.0.0 compliant
-✅ **Auto-Detection** - Detect type from commit messages
-✅ **Prerelease Support** - Generate alpha/beta/rc versions
-✅ **Git Native** - Uses git tags as source of truth
-✅ **Component Output** - Individual version numbers available
+✅ **Semantic Versioning** - SemVer 2.0.0 compliant ✅ **Auto-Detection** -
+Detect type from commit messages ✅ **Prerelease Support** - Generate
+alpha/beta/rc versions ✅ **Git Native** - Uses git tags as source of truth ✅
+**Component Output** - Individual version numbers available
 
 ## Commit-Based Auto-Detection
 
@@ -113,5 +112,7 @@ fix(docs): update readme
 
 ## Related Actions
 
-- [release-strategy-action](https://github.com/jdfalk/release-strategy-action) - Determine release strategy
-- [detect-languages-action](https://github.com/jdfalk/detect-languages-action) - Detect project languages
+- [release-strategy-action](https://github.com/jdfalk/release-strategy-action) -
+  Determine release strategy
+- [detect-languages-action](https://github.com/jdfalk/detect-languages-action) -
+  Detect project languages

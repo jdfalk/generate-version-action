@@ -11,40 +11,40 @@ echo "Latest tag: $latest_tag"
 
 # Parse version (strip 'v' prefix)
 version="${latest_tag#v}"
-IFS='.' read -r major minor patch_full <<< "$version"
-patch="${patch_full%%-*}"  # Strip prerelease suffix
+IFS='.' read -r major minor patch_full <<<"$version"
+patch="${patch_full%%-*}" # Strip prerelease suffix
 
 # Increment based on release type
 release_type="${RELEASE_TYPE,,}"
 case "$release_type" in
-  major)
-    major=$((major + 1))
-    minor=0
-    patch=0
-    ;;
-  minor)
+major)
+  major=$((major + 1))
+  minor=0
+  patch=0
+  ;;
+minor)
+  minor=$((minor + 1))
+  patch=0
+  ;;
+patch)
+  patch=$((patch + 1))
+  ;;
+auto)
+  # Auto-detect from commit messages
+  if git log "$latest_tag..HEAD" --oneline 2>/dev/null | grep -qE '^[a-f0-9]+ (feat|feature)' || true; then
     minor=$((minor + 1))
     patch=0
-    ;;
-  patch)
+  else
     patch=$((patch + 1))
-    ;;
-  auto)
-    # Auto-detect from commit messages
-    if git log "$latest_tag..HEAD" --oneline 2>/dev/null | grep -qE '^[a-f0-9]+ (feat|feature)' || true; then
-      minor=$((minor + 1))
-      patch=0
-    else
-      patch=$((patch + 1))
-    fi
-    ;;
+  fi
+  ;;
 esac
 
 # Build version string
 new_version="$major.$minor.$patch"
 
 # Add prerelease suffix if provided
-if [[ -n "${PRERELEASE_SUFFIX:-}" ]]; then
+if [[ -n ${PRERELEASE_SUFFIX:-} ]]; then
   # Count existing prereleases
   prerelease_count=$(git tag -l "v$new_version-$PRERELEASE_SUFFIX.*" 2>/dev/null | wc -l || echo 0)
   prerelease_num=$((prerelease_count + 1))
@@ -59,7 +59,7 @@ fi
   echo "minor=$minor"
   echo "patch=$patch"
   echo "prerelease=${PRERELEASE_SUFFIX:-}"
-} >> "$GITHUB_OUTPUT"
+} >>"$GITHUB_OUTPUT"
 
 # Summary
 {
@@ -68,6 +68,6 @@ fi
   echo "- **New:** \`v$new_version\`"
   echo "- **Release type:** \`$release_type\`"
   echo "- **Branch:** \`$BRANCH_NAME\`"
-} >> "$GITHUB_STEP_SUMMARY"
+} >>"$GITHUB_STEP_SUMMARY"
 
 echo "✅ Version generated: v$new_version"
