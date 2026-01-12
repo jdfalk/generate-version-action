@@ -61,40 +61,13 @@ jobs:
             ${{ steps.version.outputs.image }}:main
 
       - name: Update action defaults with digest
-        env:
-          IMAGE_NAME: ${{ steps.version.outputs.image }}
-          IMAGE_TAG: ${{ steps.version.outputs.version }}
-          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
-          VERSION_NO_PREFIX: ${{ steps.version.outputs.version_no_prefix }}
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-            from pathlib import Path
-            import re
-            import os
-
-            action = Path("action.yml")
-            text = action.read_text()
-
-            image_ref = f'{os.environ["IMAGE_NAME"]}:{os.environ["IMAGE_TAG"]}@{os.environ["IMAGE_DIGEST"]}'
-            version_no_prefix = os.environ["VERSION_NO_PREFIX"]
-
-            text = re.sub(
-                r'# version: [0-9]+\.[0-9]+\.[0-9]+',
-                f'# version: {version_no_prefix}',
-                text,
-                count=1,
-            )
-
-            text = re.sub(
-                r'default:\s*"ghcr\.io/jdfalk/generate-version-action:[^"]+"',
-                f'default: "{image_ref}"',
-                text,
-                count=1,
-            )
-
-            action.write_text(text)
-          PY
+        uses: jdfalk/update-action-docker-ref-action@v1
+        with:
+          image-name: ${{ steps.version.outputs.image }}
+          image-tag: ${{ steps.version.outputs.version }}
+          image-digest: ${{ steps.build.outputs.digest }}
+          version: ${{ steps.version.outputs.version_no_prefix }}
+          action-name: generate-version-action
 
       - name: Commit and tag release
         env:
