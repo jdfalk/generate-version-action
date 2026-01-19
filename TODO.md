@@ -1,6 +1,7 @@
 <!-- file: TODO.md -->
 <!-- version: 1.0.2 -->
 <!-- guid: 8f71310a-fb6f-4840-af91-178e549e90b6 -->
+<!-- last-edited: 2026-01-19 -->
 
 # TODO - generate-version-action
 
